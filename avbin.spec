@@ -1,7 +1,7 @@
 Summary:        Cross-platform media decoding library
 Name:           avbin
 Version:        7
-Release:        6%{?dist}
+Release:        7%{?dist}
 # Note that this license is implicitly converted to GPLv3 because we are linking to
 # a GPLv2+ ffmpeg:
 License:        LGPLv3+
@@ -65,6 +65,8 @@ doxygen Doxyfile
 
 %install
 rm -rf $RPM_BUILD_ROOT
+# buildsys sometimes fails without this:
+sleep 1m
 make install AVBIN_VERSION=$(cat VERSION) \
              INCLUDEDIR=%{_includedir} \
              LIBDIR=%{_libdir} \
@@ -89,6 +91,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/lib%{name}.so
 
 %changelog
+* Fri Jan 15 2009 Orcan Ogetbil <oget [DOT] fedora [AT] gmail [DOT] com> - 7-7
+- Add "sleep 1m" to avoid buildsys failures
+
 * Thu Jan 15 2009 Orcan Ogetbil <oget [DOT] fedora [AT] gmail [DOT] com> - 7-6
 - The S24 was actually needed for ffmpeg revision >= 15124. Updated the patch
 
