@@ -1,0 +1,40 @@
+diff -rupN avbin-src-7/Makefile avbin-src-7-new/Makefile
+--- avbin-src-7/Makefile     2008-09-21 02:45:33.000000000 -0400
++++ avbin-src-7-new/Makefile 2008-11-22 20:32:48.000000000 -0500
+@@ -1,7 +1,8 @@
+ # $Id: Makefile 18 2008-04-13 06:18:31Z Alex.Holkner $
+ 
+ CFLAGS += -DAVBIN_VERSION=$(AVBIN_VERSION) \
+-          -DFFMPEG_REVISION=$(FFMPEG_REVISION)
++          -DFFMPEG_REVISION=$(FFMPEG_REVISION) \
++	  -fPIC $(RPM_OPT_FLAGS)
+ 
+ CC = gcc
+ LD = ld
+@@ -13,7 +14,14 @@ OBJNAME = $(BUILDDIR)/avbin.o
+ INCLUDE_DIRS = -I include \
+                -I $(FFMPEG)
+ 
+-include Makefile.$(PLATFORM)
++LINKNAME=libavbin.so
++SONAME=$(LINKNAME).$(AVBIN_VERSION)
++LIBNAME=$(OUTDIR)/$(SONAME)
++
++LDFLAGS += -shared -Wl,-soname=$(SONAME) -lavformat -lavcodec -lavutil -lswscale
++
++$(LIBNAME) : $(OBJNAME) $(OUTDIR)
++	$(CC) $(LDFLAGS) -o $@ $< 
+ 
+ all : $(LIBNAME)
+ 	ln -sf $(LIBNAME) $(LINKNAME)
+@@ -31,3 +39,10 @@ clean : 
+ 	rm -f $(OBJNAME)
+ 	rm -f $(LINKNAME)
+ 	rm -f $(LIBNAME)
++
++install :
++	mkdir -p $(DESTDIR)/$(INCLUDEDIR)
++	mkdir -p $(DESTDIR)/$(LIBDIR)
++	install -pm 644 include/avbin.h $(DESTDIR)/$(INCLUDEDIR)
++	install -pm 755 dist/$(SONAME) $(DESTDIR)/$(LIBDIR)
++	ln -s $(SONAME) $(DESTDIR)/$(LIBDIR)/$(LINKNAME)
