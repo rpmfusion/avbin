@@ -1,7 +1,7 @@
 Summary:        Cross-platform media decoding library
 Name:           avbin
 Version:        7
-Release:        7%{?dist}
+Release:        8%{?dist}
 # Note that this license is implicitly converted to GPLv3 because we are linking to
 # a GPLv2+ ffmpeg:
 License:        LGPLv3+
@@ -91,6 +91,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/lib%{name}.so
 
 %changelog
+* Sun Mar 29 2009 Thorsten Leemhuis <fedora [AT] leemhuis [DOT] info> - 7-8
+- rebuild for new F11 features
+
 * Fri Jan 15 2009 Orcan Ogetbil <oget [DOT] fedora [AT] gmail [DOT] com> - 7-7
 - Add "sleep 1m" to avoid buildsys failures
 
