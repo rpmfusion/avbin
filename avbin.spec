@@ -1,7 +1,7 @@
 Summary:        Cross-platform media decoding library
 Name:           avbin
 Version:        7
-Release:        8%{?dist}
+Release:        9%{?dist}
 # Note that this license is implicitly converted to GPLv3 because we are linking to
 # a GPLv2+ ffmpeg:
 License:        LGPLv3+
@@ -19,7 +19,7 @@ Patch1:         avbin-SAMPLE_FMT_S24.patch
 Patch9:         avbin-Makefile-shared.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:  doxygen
-BuildRequires:  ffmpeg >= 0.4.9-0.48.20080908
+#BuildRequires:  ffmpeg >= 0.4.9-0.48.20080908
 BuildRequires:  ffmpeg-devel >= 0.4.9-0.48.20080908
 
 %description
@@ -56,9 +56,12 @@ mv -f CHANGELOG.bak CHANGELOG
 
 %build
 # Now compile avbin
+# (Normally we use $(ffmpeg -version |grep FFmpeg |sed 's|[^0-9]*||') to get
+# ffmpeg revision. Since ffmpeg behaves differently now, we hardcode the revision
+# number)
 make %{?_smp_mflags} \
      AVBIN_VERSION=$(cat VERSION) \
-     FFMPEG_REVISION=$(ffmpeg -version |grep FFmpeg |sed 's|[^0-9]*||') \
+     FFMPEG_REVISION=17727 \
      FFMPEG=%{_includedir}/ffmpeg
 # Generate the doc files:
 doxygen Doxyfile
@@ -91,6 +94,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/lib%{name}.so
 
 %changelog
+* Sun Mar 29 2009 Orcan Ogetbil <oget [DOT] fedora [AT] gmail [DOT] com> - 7-9
+- Hardcode ffmpeg revision number (because ffmpeg -version gives incomplete
+  information)
+
 * Sun Mar 29 2009 Thorsten Leemhuis <fedora [AT] leemhuis [DOT] info> - 7-8
 - rebuild for new F11 features
 
