@@ -1,7 +1,7 @@
 Summary:        Cross-platform media decoding library
 Name:           avbin
 Version:        7
-Release:        9%{?dist}
+Release:        10%{?dist}
 # Note that this license is implicitly converted to GPLv3 because we are linking to
 # a GPLv2+ ffmpeg:
 License:        LGPLv3+
@@ -94,6 +94,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/lib%{name}.so
 
 %changelog
+* Wed Oct 21 2009 Thorsten Leemhuis <fedora [AT] leemhuis [DOT] info> - 7-10
+- rebuilt
+
 * Sun Mar 29 2009 Orcan Ogetbil <oget [DOT] fedora [AT] gmail [DOT] com> - 7-9
 - Hardcode ffmpeg revision number (because ffmpeg -version gives incomplete
   information)
