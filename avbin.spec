@@ -1,7 +1,7 @@
 Summary:        Cross-platform media decoding library
 Name:           avbin
 Version:        7
-Release:        10%{?dist}
+Release:        11%{?dist}
 # Note that this license is implicitly converted to GPLv3 because we are linking to
 # a GPLv2+ ffmpeg:
 License:        LGPLv3+
@@ -14,6 +14,10 @@ Source0:        http://avbin.googlecode.com/files/%{name}-src-%{version}.tar.gz
 Patch0:         avbin-swscale.patch
 # SAMPLE_FMT_S24 is deprecated on ffmpeg rev > 16176:
 Patch1:         avbin-SAMPLE_FMT_S24.patch
+# Fix build against newer ffmpeg
+Patch2:         avbin-avloglevel.patch
+# avcodec_decode_{audio2,video} are deprecated in even newer ffmpeg
+Patch3:         avbin-depracated-fncs.patch
 # The original Makefile links ffmpeg statically. This is the modified 
 # Makefile that tells the compiler to link dynamically to ffmpeg:
 Patch9:         avbin-Makefile-shared.patch
@@ -45,9 +49,13 @@ and the documentation files for AVbin.
 %prep
 %setup -q -n %{name}-src-%{version}
 
-%patch0 -p1
-%patch1 -p1
-%patch9 -p1
+%patch0 -p1 -b .smscale
+%patch1 -p1 -b .FMT_S24
+%if 0%{?fedora} >= 12
+%patch2 -p1 -b .avloglevel
+%patch3 -p1 -b .deprecated
+%endif
+%patch9 -p1 -b .shared
 
 # Fix permissions and end of line encoding issues:
 sed 's/\r//' CHANGELOG > CHANGELOG.bak
@@ -94,6 +102,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/lib%{name}.so
 
 %changelog
+* Thu Oct 22 2009 Orcan Ogetbil <oget [DOT] fedora [AT] gmail [DOT] com> - 7-11
+- Update to trunk
+- Solves rebuild problem against newer ffmpeg (RFBZ #884)
+
 * Wed Oct 21 2009 Thorsten Leemhuis <fedora [AT] leemhuis [DOT] info> - 7-10
 - rebuilt
 
